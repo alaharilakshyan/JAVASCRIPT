@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <form id="myForm" class="bg-white p-8 rounded-lg shadow-md w-96">
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Registration Form</h2>
+        
+        <div class="mb-4">
+            <label for="name" class="block text-gray-700 text-sm font-semibold mb-2">Name</label>
+            <input type="text" id="name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <span class="error text-red-500 text-sm" id="nameError"></span>
+        </div>
+
+        <div class="mb-4">
+            <label for="email" class="block text-gray-700 text-sm font-semibold mb-2">Email</label>
+            <input type="email" id="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <span class="error text-red-500 text-sm" id="emailError"></span>
+        </div>
+
+        <div class="mb-4">
+            <label for="password" class="block text-gray-700 text-sm font-semibold mb-2">Password</label>
+            <input type="password" id="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <span class="error text-red-500 text-sm" id="passwordError"></span>
+        </div>
+
+        <div class="mb-6">
+            <label for="confirmPassword" class="block text-gray-700 text-sm font-semibold mb-2">Confirm Password</label>
+            <input type="password" id="confirmPassword" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <span class="error text-red-500 text-sm" id="confirmPasswordError"></span>
+        </div>
+
+        <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 font-semibold">Submit</button>
+    </form>
+
+    <script>
+        $(document).ready(function() {
+            // Clear error messages when input is valid
+            function clearError(inputId, errorId) {
+                $(`#${inputId}`).keyup(function() {
+                    var value = $(this).val();
+                    if (value.length >= 3) {
+                        $(`#${errorId}`).text("");
+                    }
+                });
+            }
+
+            // Clear errors for all fields
+            clearError("name", "nameError");
+            clearError("email", "emailError");
+            clearError("password", "passwordError");
+            clearError("confirmPassword", "confirmPasswordError");
+
+            // Email validation
+            $("#email").keyup(function() {
+                var email = $(this).val();
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    $("#emailError").text("Please enter a valid email address");
+                } else {
+                    $("#emailError").text("");
+                }
+            });
+
+            // Password validation
+            $("#password").keyup(function() {
+                var password = $(this).val();
+                if (password.length < 6) {
+                    $("#passwordError").text("Password must be at least 6 characters long");
+                } else {
+                    $("#passwordError").text("");
+                }
+            });
+
+            // Confirm password validation
+            $("#confirmPassword").keyup(function() {
+                var confirmPassword = $(this).val();
+                var password = $("#password").val();
+                if (confirmPassword !== password) {
+                    $("#confirmPasswordError").text("Passwords do not match");
+                } else {
+                    $("#confirmPasswordError").text("");
+                }
+            });
+
+            // Form submission
+            $("#myForm").submit(function(event) {
+                event.preventDefault();
+                
+                // Get form values
+                var name = $("#name").val();
+                var email = $("#email").val();
+                var password = $("#password").val();
+                var confirmPassword = $("#confirmPassword").val();
+
+                // Validate all fields
+                var isValid = true;
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (name.length < 3) {
+                    $("#nameError").text("Name must be at least 3 characters long");
+                    isValid = false;
+                }
+
+                if (!emailRegex.test(email)) {
+                    $("#emailError").text("Please enter a valid email address");
+                    isValid = false;
+                }
+
+                if (password.length < 6) {
+                    $("#passwordError").text("Password must be at least 6 characters long");
+                    isValid = false;
+                }
+
+                if (password !== confirmPassword) {
+                    $("#confirmPasswordError").text("Passwords do not match");
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    // Create user object
+                    const userData = {
+                        name: name,
+                        email: email,
+                        password: password
+                    };
+
+                    // Store in localStorage
+                    try {
+                        localStorage.setItem('userData', JSON.stringify(userData));
+                        
+                        // Show success message
+                        const successMessage = $('<div>')
+                            .addClass('mt-4 p-4 bg-green-100 text-green-700 rounded-md')
+                            .text('Registration successful!');
+                        
+                        $("#myForm").append(successMessage);
+                        
+                        // Clear form
+                        $("#myForm")[0].reset();
+                        
+                        // Remove success message after 3 seconds
+                        setTimeout(() => {
+                            successMessage.fadeOut(500, function() {
+                                $(this).remove();
+                            });
+                        }, 3000);
+                    } catch (error) {
+                        const errorMessage = $('<div>')
+                            .addClass('mt-4 p-4 bg-red-100 text-red-700 rounded-md')
+                            .text('Error saving data. Please try again.');
+                        
+                        $("#myForm").append(errorMessage);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

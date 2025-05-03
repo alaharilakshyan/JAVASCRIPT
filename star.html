@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var rows = prompt('Enter the number of rows: ');
+        printStarPattern(rows);
+
+        function printStarPattern(rows) {
+            for (let i = rows; i >= 1; i--) {
+                document.write('*'.repeat(i) + '<br>');
+            }
+            for (let i = 2; i <= rows; i++) {
+                document.write('*'.repeat(i) + '<br>');
+            }
+        }
+    </script>
+</body>
+
+</html>
+
