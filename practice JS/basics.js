@@ -42,8 +42,14 @@
 
 
 const details = {
-    full_name : "Lakshyan Alahari",
+    fullname : "Lakshyan Alahari",
     age: 20,
     isStudent : true,
     cgpa: 9.0,
 };
+
+ details["age"] = details["age"] + 5;
+
+
+console.log(details.age)
+console.log(details["fullname"]);
